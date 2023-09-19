@@ -27,14 +27,31 @@ const Contact = () => {
     });
   };
 
+  const handleDownloadCV = () => {
+    const downloadLink = document.createElement("a");
+    downloadLink.href =
+      "https://github.com/sanifmujawar/resume/raw/1965f2f9d70e19c07f0812cf5577b3dc85b75c8e/Sanif%20Resume%20UK.pdf"; // Replace with the actual path or URL to your CV
+    downloadLink.download = "Sanif_CV.pdf"; // Rename the downloaded file as desired
+    downloadLink.style.display = "none";
+
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
 
+    // Validate the form fields for non-empty values
+    if (!form.name || !form.email || !form.message) {
+      alert("Please fill in all required fields.");
+      setLoading(false);
+      return;
+    }
+
     emailjs
       .send(
-        // import.meta.env.VITE_APP_EMAILJS_SERVICE_ID,
-        // import.meta.env.VITE_APP_EMAILJS_TEMPLATE_ID,
         "service_1rtd4h3",
         "template_4huzf1b",
         {
@@ -45,18 +62,22 @@ const Contact = () => {
           message: form.message,
         },
         "ozEG3E0plxVWwXHfP"
-        // import.meta.env.VITE_APP_EMAILJS_PUBLIC_KEY
       )
       .then(
         () => {
           setLoading(false);
-          alert("Thank you. I will get back to you as soon as possible.");
+          alert(
+            "Thank you. I will get back to you as soon as possible. Meanwhile have a look at my resume!!!"
+          );
 
           setForm({
             name: "",
             email: "",
             message: "",
           });
+
+          // Trigger the CV download here
+          handleDownloadCV();
         },
         (error) => {
           setLoading(false);
@@ -92,6 +113,7 @@ const Contact = () => {
               onChange={handleChange}
               placeholder="What's your good name?"
               className="bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium"
+              required // Add the 'required' attribute
             />
           </label>
           <label className="flex flex-col">
@@ -103,6 +125,7 @@ const Contact = () => {
               onChange={handleChange}
               placeholder="What's your web address?"
               className="bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium"
+              required // Add the 'required' attribute
             />
           </label>
           <label className="flex flex-col">
@@ -114,6 +137,7 @@ const Contact = () => {
               onChange={handleChange}
               placeholder="What you want to say?"
               className="bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium"
+              required // Add the 'required' attribute
             />
           </label>
 
